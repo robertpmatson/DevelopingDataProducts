@@ -1,8 +1,8 @@
 name: DevelopingDataProducts
 account: robertmatson
 server: shinyapps.io
-bundleId: 242352
+bundleId: 242386
 url: https://robertmatson.shinyapps.io/DevelopingDataProducts
-when: 1439841918.5105
+when: 1439843733.88248
 asMultiple: FALSE
 asStatic: FALSE

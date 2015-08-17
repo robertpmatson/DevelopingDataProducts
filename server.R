@@ -49,10 +49,11 @@ shinyServer(function(input, output) {
     
     # mean histogram
     ggplot(dfMeans) + aes(x=meanVector) + 
-        geom_histogram(binwidth=0.1) + 
+        geom_histogram(binwidth=0.1, colour="black", fill="lightblue") + 
         theme_bw() + 
         scale_x_continuous(breaks=breakMean) +
-      xlab("Mean dice pair total from each game")
+      xlab("Mean dice pair total from each game") + 
+      geom_vline(aes(xintercept=mean(meanVector)), color="red", linetype="dashed", size=1)
    })
    
    output$diceRollData <- renderPlot({
@@ -62,7 +63,7 @@ shinyServer(function(input, output) {
     lims <- c(2:12)
     
     # dice roll histogram
-    ggplot(dfDiceRolls) + aes(x=diceRolls) + geom_histogram(binwidth=1) + 
+    ggplot(dfDiceRolls) + aes(x=diceRolls) + geom_histogram(binwidth=1, colour="black", fill="lightblue") + 
         scale_x_continuous(breaks=lims) + 
         theme_bw() + xlab("Mean of the dice Pair Sum all games")
     
