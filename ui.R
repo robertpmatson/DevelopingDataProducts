@@ -3,7 +3,7 @@ library(shiny)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Two Dice Roll Mean generator"),
+  titlePanel("Two Dice Roll Distribution Viewer"),
   
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
@@ -11,7 +11,7 @@ shinyUI(fluidPage(
       sliderInput("numberOfGames",
                   "Number of Games:",
                   min = 6,
-                  max = 100,
+                  max = 1000,
                   value = 50),
       sliderInput("diceRollsPerGame",
                   "Dice roll per game",
@@ -23,7 +23,7 @@ shinyUI(fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       plotOutput("diceRollMean"),
-      verbatimTextOutput("summary")
+      htmlOutput("summary")
     )
   )
 ))

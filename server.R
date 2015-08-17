@@ -38,12 +38,16 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
+meanValue <- 0
+
+meanAllDice <- 0
+
+sdGame <- 0
+
+sdAllDice <- 0
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-  
-  diceRollsPerGame <- reactive({
-    
-  })
   
   # Expression that generates a histogram based on rolling 2 dice. 
   # The expression is wrapped in a call to renderPlot to indicate that:
@@ -70,20 +74,40 @@ shinyServer(function(input, output) {
     
     dfMeans <- as.data.frame(meanVector)
     
+    breakMean = c(seq(min(meanVector) - 0.1, max(meanVector) + 0.1, by=0.1))
+    meanValue <<- mean(meanVector)     
+    
     # mean histogram
-    a <- ggplot(dfMeans) + aes(x=meanVector) + geom_histogram(binwidth=0.1) + 
-        theme_bw()
+    a <- ggplot(dfMeans) + aes(x=meanVector) + 
+        geom_histogram(binwidth=0.1) + 
+        theme_bw() + 
+        scale_x_continuous(breaks=breakMean)
 
     dfDiceRolls <- as.data.frame(diceRolls)
     
+    meanAllDice <<- mean(diceRolls)
+    
+    
+    
+    lims <- c(2:12)
+    
     # dice roll histogram
     plot <- ggplot(dfDiceRolls) + aes(x=diceRolls) + geom_histogram(binwidth=1) + 
-        scale_x_continuous(limits=c(2,12), breaks=c(2,3,4,5,6,7,8,9,10,12,12)) +
-      theme_bw()
+        scale_x_continuous(breaks=lims) + 
+        theme_bw()
     
     # return both plots
     multiplot(a, plot, cols=1)
     
   })
+  
+  output$summary <- renderUI({
+    v1 <- paste("Mean of games", meanValue)
+    v2 <- paste("SD of games", meanValue) 
+    v3 <- paste("Mean of all throws", meanAllDice)
+    v4 <- paste("SD of all throws ", meanValue)
+    HTML(paste(v1, v2, v3, v4, sep='<br/>'))
+  })
+  
   
 })
