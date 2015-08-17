@@ -11,14 +11,17 @@ shinyUI(fluidPage(
       htmlOutput("instruction"),
       sliderInput("numberOfGames",
                   "Number of Games:",
-                  min = 6,
+                  min = 10,
                   max = 1000,
                   value = 50),
       sliderInput("diceRollsPerGame",
                   "Dice roll per game",
-                  min = 5,
+                  min = 20,
                   max = 100,
-                  value = 50)
+                  value = 50),
+      htmlOutput("rethrowInfo"),
+      actionButton(label="Rethrow", inputId="rethrowDice")
+      
     ),
     
     # Show a plot of the generated distribution
@@ -27,7 +30,8 @@ shinyUI(fluidPage(
       plotOutput("diceRollMean"),
       htmlOutput("summary1"),
       plotOutput("diceRollData"),
-      htmlOutput("summary2")
+      htmlOutput("summary2"),
+      htmlOutput("summary3")
     )
   )
 ))
