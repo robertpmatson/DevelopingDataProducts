@@ -22,8 +22,9 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
+      verbatimTextOutput("summary1"),
       plotOutput("diceRollMean"),
-      htmlOutput("summary")
+      verbatimTextOutput("summary2")
     )
   )
 ))

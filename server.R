@@ -1,5 +1,6 @@
 library(shiny)
 library(ggplot2)
+library(data.table)
 
 #Function used to add multiple ggplots to the samne call
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
@@ -38,7 +39,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
-meanValue <- 0
+meanGame <- 0
 
 meanAllDice <- 0
 
@@ -48,6 +49,11 @@ sdAllDice <- 0
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+  
+  
+  getGlobals <- reactive({
+    data.table("mean"=meanGame, "meanAll"=meanAllDice, "sdGame"=sdGame, "sdAll"=sdAllDice)
+  })
   
   # Expression that generates a histogram based on rolling 2 dice. 
   # The expression is wrapped in a call to renderPlot to indicate that:
@@ -75,7 +81,8 @@ shinyServer(function(input, output) {
     dfMeans <- as.data.frame(meanVector)
     
     breakMean = c(seq(min(meanVector) - 0.1, max(meanVector) + 0.1, by=0.1))
-    meanValue <<- mean(meanVector)     
+    meanGame <<- mean(meanVector)     
+    sdGame <<- sd(meanVector)
     
     # mean histogram
     a <- ggplot(dfMeans) + aes(x=meanVector) + 
@@ -86,8 +93,7 @@ shinyServer(function(input, output) {
     dfDiceRolls <- as.data.frame(diceRolls)
     
     meanAllDice <<- mean(diceRolls)
-    
-    
+    sdAllDice <<- sd(diceRolls)
     
     lims <- c(2:12)
     
@@ -96,18 +102,24 @@ shinyServer(function(input, output) {
         scale_x_continuous(breaks=lims) + 
         theme_bw()
     
+    getGlobals()
     # return both plots
     multiplot(a, plot, cols=1)
     
   })
   
-  output$summary <- renderUI({
-    v1 <- paste("Mean of games", meanValue)
-    v2 <- paste("SD of games", meanValue) 
-    v3 <- paste("Mean of all throws", meanAllDice)
-    v4 <- paste("SD of all throws ", meanValue)
-    HTML(paste(v1, v2, v3, v4, sep='<br/>'))
+  output$summary1 <- reactive({
+    data <- getGlobals()
+    v1 <- paste("Mean of games", data$mean)
+    v2 <- paste("SD of games", data$sdGame) 
+    print(paste(v1, v2, sep='<br/>'))
   })
   
+  output$summary2 <- reactive({
+    data <- getGlobals()
+    v3 <- paste("Mean of all throws", data$meanAll)
+    v4 <- paste("SD of all throws ", data$sdAll)
+    print(paste(v3, v4, sep='<br/>'))
+  })
   
 })
