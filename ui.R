@@ -8,6 +8,7 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
     sidebarPanel(
+      htmlOutput("instruction"),
       sliderInput("numberOfGames",
                   "Number of Games:",
                   min = 6,
@@ -22,9 +23,11 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-      verbatimTextOutput("summary1"),
+      htmlOutput("introduction"),
       plotOutput("diceRollMean"),
-      verbatimTextOutput("summary2")
+      htmlOutput("summary1"),
+      plotOutput("diceRollData"),
+      htmlOutput("summary2")
     )
   )
 ))
