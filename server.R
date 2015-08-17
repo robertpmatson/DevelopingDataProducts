@@ -1,6 +1,7 @@
 library(shiny)
 library(ggplot2)
 
+#Function used to add multiple ggplots to the samne call
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   library(grid)
   
@@ -40,22 +41,26 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
   
-  # Expression that generates a histogram. The expression is
-  # wrapped in a call to renderPlot to indicate that:
+  diceRollsPerGame <- reactive({
+    
+  })
+  
+  # Expression that generates a histogram based on rolling 2 dice. 
+  # The expression is wrapped in a call to renderPlot to indicate that:
   #
   #  1) It is "reactive" and therefore should re-execute automatically
   #     when inputs change
-  #  2) Its output type is a plot
+  #  2) Its output type is a multiplot
   
   output$diceRollMean <- renderPlot({
     
-    sampleSize <- input$diceRollsPerGame
+    diceRollsPerGame <- input$diceRollsPerGame
     meanVector <- vector()
     diceRolls <- vector()
     
     for(n in 1 : input$numberOfGames){
       # get a set of normal distribution randoms
-      samples <- sample(2:12, size = 100 ,replace = TRUE , prob = table(outer(1:6,1:6,"+")) / 36)
+      samples <- sample(2:12, size = diceRollsPerGame ,replace = TRUE , prob = table(outer(1:6,1:6,"+")) / 36)
       
       # get the mean of each sample
       sM <- mean(samples)
@@ -63,14 +68,22 @@ shinyServer(function(input, output) {
       meanVector <- c(meanVector, sM)  
     }
     
-    # mean histogram
-     a <- qplot(meanVector, geom="histogram", binwidth=0.1, colour="black", fill="black")
+    dfMeans <- as.data.frame(meanVector)
     
+    # mean histogram
+    a <- ggplot(dfMeans) + aes(x=meanVector) + geom_histogram(binwidth=0.1) + 
+        theme_bw()
+
     dfDiceRolls <- as.data.frame(diceRolls)
-
+    
     # dice roll histogram
-    b <- qplot(diceRolls, geom="histogram", binwidth=1, colour="black", fill="red")
-
-    multiplot(a, b, cols=1)
+    plot <- ggplot(dfDiceRolls) + aes(x=diceRolls) + geom_histogram(binwidth=1) + 
+        scale_x_continuous(limits=c(2,12), breaks=c(2,3,4,5,6,7,8,9,10,12,12)) +
+      theme_bw()
+    
+    # return both plots
+    multiplot(a, plot, cols=1)
+    
   })
+  
 })
