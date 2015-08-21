@@ -63,7 +63,7 @@ shinyServer(function(input, output) {
     lims <- c(2:12)
     
     # dice roll histogram
-    ggplot(dfDiceRolls) + aes(x=diceRolls) + geom_histogram(binwidth=1, colour="black", fill="lightblue") + 
+    ggplot(dfDiceRolls) + aes(x=diceRolls) + geom_histogram(binwidth=1, colour="black", fill="lightblue", origin = 1.5) + 
         scale_x_continuous(breaks=lims) + 
         theme_bw() + xlab("Mean of the dice Pair Sum all games")
     
