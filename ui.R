@@ -30,8 +30,7 @@ shinyUI(fluidPage(
       plotOutput("diceRollMean"),
       htmlOutput("summary1"),
       plotOutput("diceRollData"),
-      htmlOutput("summary2"),
-      htmlOutput("summary3")
+      htmlOutput("summary2")
     )
   )
 ))
